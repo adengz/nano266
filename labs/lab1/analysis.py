@@ -4,13 +4,11 @@ from pymatgen.io.nwchemio import NwInput, NwOutput
 
 class NWChemAnalyzer(object):
 
-    def __init__(self,nh3_input,
-                 h2_output,n2_output,nh3_output):
+    def __init__(self,nh3_input,output_dict):
         self._input = nh3_input
-        self._h2_output = h2_output
-        self._n2_output = n2_output
-        self._nh3_output = nh3_output
+        self._output_dict = output_dict
         self._task_inds = {"optimize":0,"energy":2}
+        self._molecule_inds = {"H2":0,"N2":1,"NH3":2}
 
     @classmethod
     def from_files(cls,nh3_input_file="H3N1.nw",
@@ -18,10 +16,10 @@ class NWChemAnalyzer(object):
                    n2_output_file="N2.nwout",
                    nh3_output_file="H3N1.nwout"):
         nh3_input = NwInput.from_file(nh3_input_file)
-        h2_output = NwOutput(h2_output_file)
-        n2_output = NwOutput(n2_output_file)
-        nh3_output = NwOutput(nh3_output_file)
-        return cls(nh3_input,h2_output,n2_output,nh3_output)
+        output_dict = {"H2":NwOutput(h2_output_file),
+                       "N2":NwOutput(n2_output_file),
+                       "NH3":NwOutput(nh3_output_file)}
+        return cls(nh3_input,output_dict)
 
     def _get_functional(self, operation):
         operation_task = self._input.tasks[self._task_inds[operation]]
