@@ -32,7 +32,7 @@ class NWChemAnalyzer(object):
             return "HF"
         elif theory == "dft":
             xc = operation_task.theory_directives["xc"]
-            if xc == "xpbe96 cpbe96":
+            if xc == "cpbe96":
                 return "PBE"
             elif xc == "b3lyp":
                 return "B3LYP"
