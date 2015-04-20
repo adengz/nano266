@@ -1,0 +1,32 @@
+memory total 1000 mb
+geometry units angstroms
+ H 0.0 0.0 0.0
+ H 0.0 0.0 0.7414
+end
+
+title "H2 scf optimize"
+charge 0
+basis
+ H library "6-311+G*"
+end
+
+task scf optimize
+
+title "H2 scf freq"
+charge 0
+basis
+ H library "6-311+G*"
+end
+
+task scf freq
+
+title "H2 dft energy"
+charge 0
+basis
+ H library "6-31+G*"
+end
+dft
+ mult 1
+ xc xpbe96 cpbe96
+end
+task dft energy

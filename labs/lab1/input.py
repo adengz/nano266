@@ -49,4 +49,14 @@ def write_input(geofreq_functional,geofreq_basisset,
                              molecule.formula.replace(' ', ''))
 
 if __name__ == "__main__":
-    pass
+    i = 1
+    with cd("Q5"):
+        for energy_func in functionals:
+            for energy_bs in basis_sets:
+                for geofreq_func in functionals:
+                    for geofreq_bs in basis_sets:
+                        os.mkdir("%02d" % i)
+                        with cd("%02d" % i):
+                            write_input(geofreq_func,geofreq_bs,
+                                        energy_func,energy_bs)
+                        i += 1

@@ -1,0 +1,11 @@
+cd Q5
+for dir in `ls -d *`
+do
+        cd $dir
+        nwchem H2.nw > H2.nwout
+        nwchem N2.nw > N2.nwout
+        nwchem H3N1.nw > H3N1.nwout
+        cd ..
+done
+cd ..
+

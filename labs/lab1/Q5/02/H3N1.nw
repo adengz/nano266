@@ -1,0 +1,34 @@
+memory total 1000 mb
+geometry units angstroms
+ N 0.257 -0.363 0.0
+ H 0.257 0.727 0.0
+ H 0.771 -0.727 0.89
+ H 0.771 -0.727 -0.89
+end
+
+title "H3N1 scf optimize"
+charge 0
+basis
+ H library "6-311+G*"
+ N library "6-311+G*"
+end
+
+task scf optimize
+
+title "H3N1 scf freq"
+charge 0
+basis
+ H library "6-311+G*"
+ N library "6-311+G*"
+end
+
+task scf freq
+
+title "H3N1 scf energy"
+charge 0
+basis
+ H library "6-31+G*"
+ N library "6-31+G*"
+end
+
+task scf energy
