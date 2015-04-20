@@ -8,7 +8,6 @@ class NWChemAnalyzer(object):
         self._input = nh3_input
         self._output_dict = output_dict
         self._task_inds = {"optimize":0,"energy":2}
-        #self._molecule_inds = {"H2":0,"N2":1,"NH3":2}
 
     @classmethod
     def from_files(cls,nh3_input_file="H3N1.nw",
@@ -105,12 +104,14 @@ class NWChemAnalyzer(object):
                 {mol_name:self._get_thermal_correction(mol_name)})
         return enthalpy_corrections
 
+    @property
     def formation_enthalpy(self):
         energy = self.final_energies
         corre = self.enthalpy_corrections
         enthalpy = {}
         for mol_name in self._output_dict.keys():
-            enthalpy.update({mol_name:energy[mol_name+corre[mol_name]]})
-        formation_enthalpy = enthalpy["NH3"]-(enthalpy["H2"]+enthalpy["N2"])
+            enthalpy.update(
+                {mol_name:energy[mol_name].real+corre[mol_name].real})
+        formation_enthalpy = 2*enthalpy["NH3"]-(3*enthalpy["H2"]+enthalpy["N2"])
         return formation_enthalpy
 
