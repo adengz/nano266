@@ -8,7 +8,7 @@ class NWChemAnalyzer(object):
         self._input = nh3_input
         self._output_dict = output_dict
         self._task_inds = {"optimize":0,"energy":2}
-        self._molecule_inds = {"H2":0,"N2":1,"NH3":2}
+        #self._molecule_inds = {"H2":0,"N2":1,"NH3":2}
 
     @classmethod
     def from_files(cls,nh3_input_file="H3N1.nw",
@@ -39,21 +39,23 @@ class NWChemAnalyzer(object):
         return basis_set
 
     @property
-    def geofreq_functional(self):
-        functional = self._get_functional("optimize")
-        return functional
+    def input_parameters(self):
+        input_parameters = {}
+        for operation,name in zip(["optimize","energy"],
+                       ["Geometry & Frequency","Energy"]):
+            functional = self._get_functional(operation)
+            basis_set = self._get_basis_set(operation)
+            input_parameters.update({name:{"Functional":functional,
+                                           "Basis Set":basis_set}})
+        return input_parameters
 
-    @property
-    def geofreq_basisset(self):
-        basis_set = self._get_basis_set("optimize")
-        return basis_set
+    def _get_final_geometry(self, molecule):
+        output = self._output_dict[molecule]
+        mol = output.data[0]["molecules"][-1]
+        return mol
 
-    @property
-    def energy_functional(self):
-        functional = self._get_functional("energy")
-        return functional
 
-    @property
-    def energy_basisset(self):
-        basis_set = self._get_basis_set("energy")
-        return basis_set
+    def _get_final_energy(self, molecule):
+        output = self._output_dict[molecule]
+        energy = output.data[2]["energies"][-1]
+        return energy
