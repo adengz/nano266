@@ -112,6 +112,6 @@ class NWChemAnalyzer(object):
         for mol_name in self._output_dict.keys():
             enthalpy.update(
                 {mol_name:energy[mol_name].real+corre[mol_name].real})
-        formation_enthalpy = 2*enthalpy["NH3"]-(3*enthalpy["H2"]+enthalpy["N2"])
+        formation_enthalpy = enthalpy["NH3"]-(1.5*enthalpy["H2"]+0.5*enthalpy["N2"])
         return formation_enthalpy
 
