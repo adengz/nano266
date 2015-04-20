@@ -1,24 +1,29 @@
 __author__ = 'zhideng'
 
 from pymatgen.io.nwchemio import NwInput, NwOutput
+import json
 
 class NWChemAnalyzer(object):
 
-    def __init__(self,nh3_input,output_dict):
+    def __init__(self,nh3_input,output_dict,cpu_time):
         self._input = nh3_input
         self._output_dict = output_dict
         self._task_inds = {"optimize":0,"energy":2}
+        self._cpu_time = cpu_time
 
     @classmethod
     def from_files(cls,nh3_input_file="H3N1.nw",
                    h2_output_file="H2.nwout",
                    n2_output_file="N2.nwout",
-                   nh3_output_file="H3N1.nwout"):
+                   nh3_output_file="H3N1.nwout",
+                   cpu_time_file="cpu_time.json"):
         nh3_input = NwInput.from_file(nh3_input_file)
         output_dict = {"H2":NwOutput(h2_output_file),
                        "N2":NwOutput(n2_output_file),
                        "NH3":NwOutput(nh3_output_file)}
-        return cls(nh3_input,output_dict)
+        jf = open(cpu_time_file)
+        cpu_time = json.load(jf)
+        return cls(nh3_input,output_dict,cpu_time)
 
     def _get_functional(self, operation):
         operation_task = self._input.tasks[self._task_inds[operation]]
@@ -113,5 +118,10 @@ class NWChemAnalyzer(object):
             enthalpy.update(
                 {mol_name:energy[mol_name].real+corre[mol_name].real})
         formation_enthalpy = enthalpy["NH3"]-(1.5*enthalpy["H2"]+0.5*enthalpy["N2"])
+        formation_enthalpy = formation_enthalpy*96.4869
         return formation_enthalpy
+
+    @property
+    def cpu_time(self):
+        return self._cpu_time
 
