@@ -35,13 +35,13 @@ class NWChemAnalyzer(object):
             elif xc == "b3lyp":
                 return "B3LYP"
 
-    def _get_basisset(self, operation):
+    def _get_basis_set(self, operation):
         operation_task = self._input.tasks[self._task_inds[operation]]
         basis_set = operation_task.basis_set["N"]
         return basis_set
 
     @property
-    def geofreq_functinoal(self):
+    def geofreq_functional(self):
         functional = self._get_functional("optimize")
         return functional
 
@@ -51,7 +51,7 @@ class NWChemAnalyzer(object):
         return basis_set
 
     @property
-    def energy_functinoal(self):
+    def energy_functional(self):
         functional = self._get_functional("energy")
         return functional
 
