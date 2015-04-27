@@ -10,11 +10,10 @@ class UltiAnalyzer(object):
         self._summ_dict = {}
         for col_value in df.columns.values:
             self._summ_dict[col_value] = df[col_value].values
-        for k in ["ecut", "energy"]:
-            self._summ_dict[k] = self._summ_dict[k]*13.6057
-        self._summ_dict["alat"] = self._summ_dict["alat"]*0.5292
-        self._summ_dict["total_force"] = \
-            self._summ_dict["total_force"]*13.6057/0.5292
+        factor = {"ecut":13.6057, "alat":0.5292,
+                  "energy":13.6057*1000/2, "total_force":13.6057/0.5292}
+        for k,v in factor.items():
+            self._summ_dict[k] *= v
 
     @property
     def summ_dict(self):
@@ -22,7 +21,8 @@ class UltiAnalyzer(object):
 
     def get_plot(self, xkey, ykey):
         plt = get_publication_quality_plot(8,6)
-        plt.plot(self.summ_dict[xkey], self.summ_dict[ykey])
+        plt.plot(self.summ_dict[xkey], self.summ_dict[ykey],
+                 'bo',fillstyle='none')
         return plt
 
 
