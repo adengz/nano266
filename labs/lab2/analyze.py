@@ -14,6 +14,7 @@ patterns = {
     "alat": re.compile("celldm\(1\)=\s+([\d\.]+)\s"),
     "nkpts": re.compile("number of k points=\s+([\d]+)"),
     "total_force": re.compile("Total force =\s+([\d\.]+)")
+    "cpu_time": re.compile("total cpu time spent up to now is\s+([\d\.\-]+)\s+secs")
 }
 
 
