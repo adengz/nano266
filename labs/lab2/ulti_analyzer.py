@@ -43,11 +43,15 @@ class UltiAnalyzer(object):
         return self._d['alat'][i]
 
     def get_bulk_modulus(self, dv=0.01):
-        e = self._d['energy']
-        v = self._d['volume']
-        i = self._get_best_alat_ind()
-        f = interp1d(v,e,'quadratic')
-        k = v[i]*(f(v[i]+2*dv)+f(v[i]-2*dv)-2*e[i])/(4*dv**2)
+        energy = self._d['energy']
+        volume = self._d['volume']
+        v_max = round(volume.max(),2)
+        v_min = round(volume.min(),2)
+        v = np.arange(v_min+0.01,v_max-0.01,0.01)
+        f = interp1d(volume,energy,'quadratic')
+        e = f(v)
+        i = int(np.where(e==e.min())[0])
+        k = v[i]*(e[i-2]+e[i+2]-2*e[i])/(4*dv**2)
         return k*160.2
 
 
