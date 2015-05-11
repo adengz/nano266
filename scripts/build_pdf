@@ -7,7 +7,7 @@ A help script to generate all PDFs from the multimarkdown README.md.
 import os
 from monty.os import cd
 import re
-
+import filecmp
 
 for parent, _, files in os.walk("labs"):
     for f in files:

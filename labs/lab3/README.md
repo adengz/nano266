@@ -1,5 +1,5 @@
 LaTeX input:        mmd-mavrldoc-header
-Title:              NANO266 Lab 3 - Bulk properties from Quantum Mechanics
+Title:              NANO266 Lab 3 - Phase Stability from Quantum Mechanics
 Base Header Level:  2
 LaTeX Mode:         mavrldoc
 LaTeX input:        mmd-mavrldoc-begin-doc
@@ -8,7 +8,7 @@ LaTeX footer:       mmd-mavrldoc-footer
 
 # Introduction
 
-In this lab, we will look at obtaining bulk properties from quantum mechanics.
+In this lab, we will look at predicting phase equilibrium from quantum mechanics.
 We will still be using QuantumEspresso. We will also introduce you to the
 basics of running calculations on supercomputing resources, e.g., how to submit
 jobs, handle queues, etc.
@@ -22,130 +22,147 @@ the lab3 folder by doing:
 cd <path/to/repo>/labs/lab3
 ```
 
-# Q1 (12 points): Convergence of *absolute* energies with respect to energy cutoff
+# Submitting jobs to the Comet queues
 
-Start by looking at the `Si.pw.in.template`, which is a template for the input
-file for PWSCF. You should get yourself familiar with the format, and what each
-of the sections and parameters mean. Note that some parameters have
-placeholders {xxx}, which will be replaced by our run script. A PWSCF_IO
-tutorial is provided in the tutorials folder of this repo to help you
-understand the parameters. You may also wish to consult the QuantumEspresso
-online documentation. A quick explanation of the key parameters are given as
-follows:
+Comet uses the Simple Linux Utility for Resource Management (Slurm) job
+scheduling system. All supercomputing clusters use a job scheduler of some
+sort, e.g., PBS, Sun GridEngine, SLURM. They differ in some features, but work
+on the same basic principle. You send jobs to a queue, and they are run
+according to some priority system. For more information, you may read the
+guide at https://www.sdsc.edu/support/user_guides/comet.html. For the purposes
+of this lab, a sample *submit_script* has been provided. It is imperative that
+you understand how the script works as you will be using this for the rest of
+this and the next lab. Read the user guide to understand what each of the
+options in the preamble means. You can then modify them to suit your needs.
 
-```
-&control                   # This is the control section
-  calculation = 'scf' ,    # Specifies that we are doing a static SCF calculation.
-  outdir = './tmp' ,
-  pseudo_dir = './' ,      # Location of pseudopotential files.
-/
-&system                    # Specifies the structure
-  ibrav = 2,               # For PWSCF, ibrav = 2 denotes an FCC cell.
-  celldm(1) = {alat},      # This specifies the lattice parameter of the fcc cell.
-  nat = 2,                 # We have two Si atoms per unit cell.
-  ntyp = 1,                # There is only one type of atom (Si)
-  ecutwfc = {ecut} ,       # This stipulates the energy cutoff.
-/
-&ELECTRONS                 # These three sections are not used in this particular calculation.
-/
-&IONS
-/
-&CELL
-/
-ATOMIC_SPECIES             # Specify the pseudopotential for each species.
-  Si   28.055  {pseudopotential}
-ATOMIC_POSITIONS crystal   # Specifies the atomic positions in frac. coords
-  Si      0.00    0.00    0.00
-  Si      0.25    0.25    0.25
-K_POINTS automatic         # Specifies the k-point grid to be used
-  {k} {k} {k}   0 0 0
+To submit the job, just simply run:
+
+```bash
+sbatch submit_script
 ```
 
-We have also written a Python script called `run_pw.py` to help you in this
-simulation. Again, read through the script to understand what it does. It is
-heavily commented to aid you in your understanding. Note that this is a
-starting point. *You will need to understand enough to make changes in order to
-finish this lab.* A second script called `analyze.py` is provided to help you
-compile the results into a csv file, which can be opened with most spreadsheet
-programs for analysis. To run the scripts, you simply need to type
+You may check on the status of your job using the following command:
 
-```python <script>.py <other parameters if necessary>```
+```bash
+squeue -u <username>
+```
 
-1. Using PWSCF, calculate the energy of silicon as a function of cutoff
-   energy. A good increment is ~10 Ry, in the range of 10-100 Ry. When changing
-   the cutoff, make sure to keep the other variables (lattice constant,
-   *k*-points, etc.) fixed. Record and plot your final results. Specify when
-   you reach the level of convergence of ~5 meV/atom (you will need to take
-   care of the unit conversions). Note that PWSCF calculates energy per
-   primitive cell.
-2. Do you see a trend in your calculated energies with respect to cutoff?
+If you make a mistake and need to kill a job for whatever reason. use the
+`scancel` command.
 
-# Q2 (12 points): Convergence of *absolute* energies with respect to *k*-points
+```bash
+scancel <jobid>
+```
 
-1. Modify the script in Q1 to calculate the energy as a function of *k*-point
-   grid size. For each grid, record the number of unique *k*-points. Note that
-   this is not the same as the *k* specified in the script and input file. The
-   `analyze.py` script reports the number of unique *k*-points extracted from
-   the output files. Again, make sure to keep your other variables fixed.
-   Record and plot your final results.
-   Specify when you reach the level of convergence of ~5 meV/atom.
-2. Do you see a trend in your calculated energies with respect to grid size?
-   If you see a trend, is this what you expect and why? If not, why?
-3. Plot your calculation time against the number of *k*-points. Is there a
-   relationship, and if so, what is that relationship? (You will need to figure
-   out how to extract the calculation time from the output files.)
+# Q1 (20 points): The bcc-hcp transition in iron
 
-# Q3 (12 points): Convergence of forces with respect to cutoff energies
+In this problem, you will look at the bcc to hcp transition in iron. We will be
+using the PBE GGA functional that we used in the earlier lab. Use an energy
+cutoff of 50 Ry with a charge density cutoff of 250 Ry. You will need to
+determine an appropriate $k$-point mesh for both the bcc and hcp structures.
+The energy differences are very small; choose parameters to converge your
+energies to within 1 meV.
 
-Let us now investigate the convergence of forces on atoms with respect to
-cutoff. Displace a Si atom +0.05 in the z direction (fractional coordinates).
-Keeping other parameters fixed, calculate the forces on Si as a function of
-cutoff. A good force value would be converged to within ~10 meV/Angstrom
-(note that PWSCF gives forces in Ryd/bohr). Use a *k*-point grid of 4x4x4.
-Plot and record your results, including all relevant parameters.
+1. Calculate the ground state energy of Fe in both the bcc and hcp structure.
+   Two template files are provided for bcc and hcp.  A run_pw.py file is also
+   provided that works for bcc, but you need to modify it as appropriate to
+   work for hcp. Optimize the lattice parameters for both bcc and hcp Fe
+   (i.e., $a$ for bcc and $a$ and $c$ for hcp). In the case of hcp, celldm(3),
+   which is the c/a ratio, needs to be provided. Try the following values of
+   c/a ratio: [1.72,1.73,1.74] and for each of these ratios, alter the $a_{o}$
+   parameter to find the equilibrium sructure in hcp phase.
+2. Varying the volume of the cell calculate when the hcp structure becomes more
+   favorable than the bcc one. Note that it is important when comparing
+   energies that the $k$-point samplings for both systems are comparable and
+   converged. Determine an appropriate $k$-point grid for both structures. Note
+   that the $k$-point should be proportional to the reciprocal lattice vector
+   length.
+3. Calculate and compare the total energy for the BCC structure in the
+   ferromagnetic, anti-ferromagnetic, and nonmagnetic states. (10 points)
 
-# Q4 (12 points): Convergence of forces with respect to *k*-points
+Note that you will need to read the PWSCF manual to figure out how to set
+various options to do this work. At this stage of the course, we will not
+be providing all the templates and scripts and you need to work through the
+manuals to figure out what to do. This is part and parcel of computational
+modeling work.
 
-Repeat Q3, but this time, investigate the converge as a function of *k*-point
-grid size. Keep all other parameters fixed. Record your relevant conditions
-(lattice parameter, cutoffs, etc.)
+# Q2 (40 points): Stability of the $\mbox{PbTiO}_3$ perovskite
 
-# Q5 (12 points): Convergence of energy differences
+$\mbox{PbTiO}_3$ is a perovskite oxide which is ferroelectric. The
+ferroelectric response of $\mbox{PbTiO}_3$ is the result of a displacive
+transition where a low temperature tetragonal phase is preferred over the cubic
+phase.
 
-In practice, only energy differences have physical meaning. Let us now
-investigate the convergence of energy differences with respect to energy
-cutoff and *k*-points. For this exercise, compute the energy difference
-between silicon structures at two lattice parameters. You can calculate the
-energies of silicon the experimental lattice parameter (10.26 Bohr), and at
-10.30 Bohr, and take the difference between the two. Do a convergence study for
-both the energy cutoff and the *k*-point grid. Record all relevant parameters
-such as the lattice constant, *k* -points, and so on. A good energy difference
-is converged to ~5 meV/atom.
+For this question, it is important that you note several differences in the
+`PbTiO3.pw.in.template` file.
 
-# Q6 (20 points): Selecting the right parameters
+* The `calculation` parameter is set to `relax`, which means we are allowing
+  atoms to move.
+* There are two additional sections: IONS section with `ion_dynamics = 'bfgs'`,
+   and CELL section with `cell_dynamics = 'bfgs'` which chooses the quasi-Newton
+   minimization method.
+* At the end of the atomic positions for Pb and Ti, there are three additional
+  0s. These indicate that the Pb and Ti are not allowed to move in any of the
+  coordinates. Conversely, no such restriction is placed on the O atoms, which
+  are allowed to relax accordingly.
 
-Look at the results from the preceding questions. Discuss the changes in the
-requirements in terms of cutoff, *k*-point grid, etc. when comparing absolute
-energies, forces and energy differences. Explain as far as possible any trends
-you see.
+Please answer the following questions.
 
-# Q7 (10 points): Finding the equilibrium structure
+1. Calculate and plot the energy of cubic $\mbox{PbTiO}_3$ as a function of
+   lattice parameter. Use a 4 $\times$ 4 $\times$ 4 $k$-point mesh with a
+   1, 1, 1 offset. Sample lattice parameters with a sufficiently fine grid to
+   get a reliable value for the equilibrium lattice constant. To get an idea
+   where to begin, note that the room-temperature experimental lattice constant
+   is about 3.97 ${\buildrel _{\circ} \over {\mathrm{A}}}$.
+2. Using the equilibrium lattice parameter from part (1), plot the energy as a
+   function of displacement of the Ti atom along one of the cubic lattice
+   directions, allowing the O atoms to fully relax for each displacement.
+   Report the Ti displacement at which the total energy is at a minimum. What
+   is the energy difference between this configuration and the minimum-energy
+   configuration from part (1)? Note that the Ti displacement will be very
+   small.
+3. Now allow both the Ti atom and the O atoms to relax and find the minimum
+   energy structure, using the minimum-energy Ti displacement from part (B) as
+   your starting configuration. Report the final atomic positions and final
+   energy.
+4. Which phase is the most energetically stable for $\mbox{PbTiO}_3$ and how
+   does that relate to the ferroelectric behavior of this material?
 
-Using an appropriate set of parameters (energy cutoff, *k*-point, etc.),
-determine the predicted equilibrium lattice constant for silicon by calculating
-the energy of the silicon structure at several lattice parameters. Note that
-you may need to use a finer grid near the equilibrium point to get a more
-accurate answer.
+# Q3 (40 points): Formation Energy of the $\mbox{Cu}_{1-x}\mbox{Au}_x$ intermetallics
 
-Also, it should be pointed that PWSCF allows you to specify
-`calculation = 'vc-relax'` to automatically perform a full cell relaxation. But
-it is important that you understand how to do it using static SCF energy
-calculations at different lattice parameters as a demonstration of the
-variational principle. You will be using this in your next lab.
+In this problem, we will investigate the formation energies of the
+$\mbox{Cu}_{1-x}\mbox{Au}_x$ for $x$ = 0.25, 0.5 and 0.75. See Ozolins et al.
+Cu-Au, Ag-Au, Cu-Ag and Ni-Au intermetallics: First-principles study of phase
+diagrams and structures, Phys. Rev. B, 1997, 57, 19,
+doi:10.1103/PhysRevB.57.6427.
 
-# Q8 (10 points): Choice of functional
-
-The calculations you have been doing thus far is based on the PBE GGA
-functional. Redo Q7, but now use the `Si.pz-n-kjpaw_psl.0.1.UPF` (LDA)
-pseudopotential instead. Comment on any differences in the predicted
-equilibrium lattice constant.
+1. Calculate the ground state energy for fcc Cu, Au and
+   $\mbox{Cu}_{1-x}\mbox{Au}_x$.  Here, we will use PWSCF's *vc-relax* option
+   to avoid having to manually do a equation of state analysis. Start with the
+   end members and the CuAu ($x$ = 0.5) intermetallic and do a $k$-point
+   convergence such that your formation energies are within
+   5 meV / atom. Start with a relatively small grid, e.g., 4 $\times$ 4 $\times
+   4. For CuAu, you should use the L10 phase, which is a body-centered
+   tetragonal (bct) with two atoms in the unit cell, and lattice
+   parameters are $a = b \ne c$. A sample file is provided. Please note that starting
+   configuration is a simple cubic structure with face-centered and corner lattice points
+   occupied such that there are alternate layers of Cu and Au. You may
+   search the internet for the experimental lattice parameters and use those to
+   set your initial guesses for $a$ = celldm(1) and $c/a$ = celldm(3) (in case you start with a
+   ibrav = 7, tetragonal structure). You should use good guesses to minimize the computational time.
+2. Calculate the formation energy of $\mbox{Cu}_{1-x}\mbox{Au}_x$ :
+   $$\Delta H_f (\mbox{Cu}_{1-x}\mbox{Au}_x) = E(\mbox{Cu}_{1-x}\mbox{Au}_x) − (1 - x) E(\mbox{Cu}) − x E(\mbox{Au})$$
+   where E(Cu) and E(Au) are the total energies for Cu and Au in their fcc
+   bulk phase. Note that you must normalize the energies accordingly. We want the formation energies per atom, i.e., 0.5 $\times$ the formation energy per CuAu.
+3. Repeat the calculations for $\mbox{Cu}_3\mbox{Au}$ and $\mbox{CuAu}_3$. For
+   both these structures, start with a fcc Cu or Au structure, and replace all
+   corner atoms with atoms of the other type. For example, to create
+   the $\mbox{Cu}_3\mbox{Au}$, you can start from the fcc Cu unit cell, and set
+   the Cu atoms to be on the faces, which gives one Au (1 / 8 $\times$ 8) and
+   three Cu (1 / 2 $\times$ 6). Note that in order to create this structure,
+   you need to decrease the symmetry from the fcc to simple cubic, and then add
+   atoms accordingly. Review your crystallography and PWSCF's input file format
+   so that you understand how to do this.
+4. Plot the formation energy of the $\mbox{Cu}_{1-x}\mbox{Au}_x$ phases you have
+   calculated against $x$. Discuss which of the ordered intermetallic
+   structures are stable at 0K.
