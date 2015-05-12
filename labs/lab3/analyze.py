@@ -32,7 +32,7 @@ def get_results(filename):
 
 
 def analyze(filenames):
-    fieldnames = ['filename', 'ecut', 'nkpts', 'alat', 'calat'
+    fieldnames = ['filename', 'ecut', 'nkpts', 'alat', 'calat',
                   'energy','total_force','cpu_time']
     with open('results.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
