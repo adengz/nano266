@@ -12,6 +12,7 @@ patterns = {
     "energy": re.compile("total energy\s+=\s+([\d\.\-]+)\sRy"),
     "ecut": re.compile("kinetic\-energy cutoff\s+=\s+([\d\.\-]+)\s+Ry"),
     "alat": re.compile("celldm\(1\)=\s+([\d\.]+)\s"),
+    "calat": re.compile("celldm\(3\)=\s+([\d\.]+)\s"),
     "nkpts": re.compile("number of k points=\s+([\d]+)"),
     "total_force": re.compile("Total force =\s+([\d\.]+)"),
     "cpu_time": re.compile("total cpu time spent up to now is\s+([\d\.\-]+)\s+secs")
@@ -31,7 +32,8 @@ def get_results(filename):
 
 
 def analyze(filenames):
-    fieldnames = ['filename', 'ecut', 'nkpts', 'alat', 'energy','total_force','cpu_time']
+    fieldnames = ['filename', 'ecut', 'nkpts', 'alat', 'calat'
+                  'energy','total_force','cpu_time']
     with open('results.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
