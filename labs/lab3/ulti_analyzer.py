@@ -13,7 +13,7 @@ class UltiAnalyzer(object):
         for col_value in df.columns.values:
             d[col_value] = df[col_value].values
         factor = {'ecut':13.6057, 'alat':0.5292,
-                  'energy':13.6057,
+                  'energy':13605.7,
                   'total_force':13.6057/0.5292}
         for k,v in factor.items():
             d[k] *= v
