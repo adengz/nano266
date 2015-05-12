@@ -7,18 +7,29 @@ from pymatgen.util.plotting_utils import get_publication_quality_plot
 
 class UltiAnalyzer(object):
 
-    def __init__(self, csv_file, energy_scale='per_atom'):
+    def __init__(self, csv_file):
         df = pd.read_csv(csv_file)
-        self._d = {}
+        d = {}
         for col_value in df.columns.values:
-            self._d[col_value] = df[col_value].values
-        ef = {'per_atom':13.6057/2,'per_cell':13.6057}
+            d[col_value] = df[col_value].values
         factor = {'ecut':13.6057, 'alat':0.5292,
-                  'energy':ef[energy_scale],
+                  'energy':13.6057,
                   'total_force':13.6057/0.5292}
         for k,v in factor.items():
-            self._d[k] *= v
-        self._d['volume'] = self._d['alat']**3/4.0
+            d[k] *= v
+        #BCC
+        if d['calat'][0] == 0:
+            d['volume'] = d['alat']**3
+        #HCP
+        else:
+            d['energy'] *= 0.5
+            d['volume'] = 0.8660*d['calat']*d['alat']**3
+        self._d = d
+        self._df = df
+
+    @property
+    def dataframe(self):
+        return self._df
 
     @property
     def summ_dict(self):
@@ -38,21 +49,9 @@ class UltiAnalyzer(object):
         return ind
 
     @property
-    def best_alat(self):
+    def best_lat(self):
         i = self._get_best_alat_ind()
-        return self._d['alat'][i]
-
-    def get_bulk_modulus(self, dv=0.01):
-        energy = self._d['energy']
-        volume = self._d['volume']
-        v_max = round(volume.max(),2)
-        v_min = round(volume.min(),2)
-        v = np.arange(v_min+0.01,v_max-0.01,0.01)
-        f = interp1d(volume,energy,'quadratic')
-        e = f(v)
-        i = int(np.where(e==e.min())[0])
-        k = v[i]*(e[i-2]+e[i+2]-2*e[i])/(4*dv**2)
-        return k*160.2
+        return self._d['alat'][i], self._d['calat'][i]
 
 
 
