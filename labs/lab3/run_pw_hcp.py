@@ -20,10 +20,11 @@ with open("Fe.hcp.pw.in.template") as f:
 
 # Set default values for various parameters
 #k = 8 # k-point grid of 8x8x8
-alat = 5.42 # The lattice parameter for the cell in Bohr.
+alat = 4.80 # The lattice parameter for the cell in Bohr.
 calat = 1.73
-k1_array = np.arange(4,17)
+k1_array = np.arange(8,17)
 k3_array = np.ceil(k1_array/calat)
+k3_array = k3_array.astype(int)
 
 # Loop through different k-points.
 for k1,k3 in zip(k1_array,k3_array):

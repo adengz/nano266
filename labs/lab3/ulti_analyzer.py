@@ -38,7 +38,7 @@ class UltiAnalyzer(object):
     def get_plot(self, xkey, ykey):
         plt = get_publication_quality_plot(8,6)
         plt.plot(self._d[xkey], self._d[ykey],
-                 'bo',fillstyle='none')
+                 'bo-',fillstyle='none')
         return plt
 
     def _get_best_alat_ind(self):
