@@ -70,15 +70,15 @@ energies to within 1 meV.
    (i.e., $a$ for bcc and $a$ and $c$ for hcp). In the case of hcp, celldm(3),
    which is the c/a ratio, needs to be provided. Try the following values of
    c/a ratio: [1.72,1.73,1.74] and for each of these ratios, alter the $a_{o}$
-   parameter to find the equilibrium sructure in hcp phase.
-2. Varying the volume of the cell calculate when the hcp structure becomes more
+   parameter to find the equilibrium sructure in hcp phase. Start with an $a_{o}$ value of 4.8 a.u.
+2. Varying the volume of the cell, calculate the pressure at which the hcp structure becomes more
    favorable than the bcc one. Note that it is important when comparing
    energies that the $k$-point samplings for both systems are comparable and
    converged. Determine an appropriate $k$-point grid for both structures. Note
    that the $k$-point should be proportional to the reciprocal lattice vector
    length.
 3. Calculate and compare the total energy for the BCC structure in the
-   ferromagnetic, anti-ferromagnetic, and nonmagnetic states. (10 points)
+   ferromagnetic, and anti-ferromagnetic states. (10 points)
 
 Note that you will need to read the PWSCF manual to figure out how to set
 various options to do this work. At this stage of the course, we will not

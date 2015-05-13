@@ -41,19 +41,16 @@ energy cutoff of 50 Ry with a $k$-point grid of 8 $\times$ 8 $\times$ 1.
    file `Al.fcc.pw.in.template` has already been provided. Please use the
    `scf.py` script to perform these calculations. As usual, please scan with
    a fairly coarse grid (e.g., 0.01 increments) before performing scans with a
-   more dense grid near the minimum energy.
+   more dense grid near the minimum energy. Record down the lattice parameter
+   in Bohr and energy in Ry.
 2. Using the lattice parameter you obtained in part 1, perform a calculation of
    the Al (100) surface. A sample `Al100.pw.in.template` file has been
-   provided to you, as well as a `fcc_surface_generator.py`. Let's see what the
-   input file does by typing:
+   provided to you, as well as a `fcc_surf_gen.py`. Start by typing:
 
-    ```bash
-    python fcc_surface_generator.py --a 6.92 --nslab 3 --nvac 3
-    ```
+     `python fcc_surf_gen.py --a 7.65 --nslab 3 --nvac 3`
 
    The output should be something like the following:
 
-    ```
      &CONTROL
       calculation = 'relax' ,
       outdir = './tmp' ,
@@ -99,9 +96,9 @@ energy cutoff of 50 Ry with a $k$-point grid of 8 $\times$ 8 $\times$ 1.
       Al 0.0 0.5 0.416666666667
     K_POINTS automatic
       8 8 1   0 0 0
-    ```
 
    There are several important things to note about this input file:
+
    * The `calculation` parameter has been set to `relax`. This allows the atoms
      to move, but fixes the cell shape.
    * The `ibrav` tag has been set to 6, which is a tetragonal cell. To perform
@@ -117,6 +114,27 @@ energy cutoff of 50 Ry with a $k$-point grid of 8 $\times$ 8 $\times$ 1.
      fractional coordinate depends on **both your slab size as well as your
      vacuum size**! Also, we have fixed all atoms except for the top and
      bottom two atomic layers (denoted by the `0 0 0` after the coordinates.
+
+   You can write the output to a file by giving it the `--outfile` option:
+
+     python fcc_surf_gen.py --a 7.65 --nslab 3 --nvac 3 --outfile Al100_3_3.pw.in
+
+   To do this question, vary nslab and nvac and look at how the energies
+   change with nslab and nvac. Start by keeping nslab = 2 and vary nvac
+   between 1 and 4. Get a value of nvac that gives a reasonable convergence of
+   surface energies (say 0.01 Jm $^{-2}$). Note that the surface energy is
+   given by:
+
+   \\[\gamma = \frac{1}{2A} (E_{slab} - N E_{bulk} ) \\]
+
+   where $E_{slab}$ is the energy of the slab, $E_{bulk}$ is the energy per
+   atom of bulk Al, and N is the number of atoms in the slab.
+
+   Using the converged value of nvac, vary your nslab between 1 and 4. Again,
+   determine the value of nslab that converges the surface energies to
+   0.01 Jm $^{-2}$.
+
+   Report your final surface energy in Jm $^{-2}$.
 
 # Q2: The (111) surface of Al
 
