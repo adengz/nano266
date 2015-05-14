@@ -22,29 +22,29 @@ with open("Fe.hcp.pw.in.template") as f:
 #k = 8 # k-point grid of 8x8x8
 alat = 4.80 # The lattice parameter for the cell in Bohr.
 calat = 1.73
-k1_array = np.arange(8,17)
-k3_array = np.ceil(k1_array/calat)
-k3_array = k3_array.astype(int)
+k1 = 13
+k3 = 8
 
 # Loop through different k-points.
-for k1,k3 in zip(k1_array,k3_array):
+for calat in np.linspace(1.71,1.74,4):
+    for alat in np.linspace(4.70,4.90,21):
     # This generates a string from the template with the parameters replaced
     # by the specified values.
-    s = template.format(alat=alat, calat=calat, k1=k1, k3=k3)
+        s = template.format(alat=alat, calat=calat, k1=k1, k3=k3)
 
     # Let's define an easy jobname.
-    jobname = "Fe_hcp_%s_%s" % (alat, k1)
+        jobname = "Fe_hcp_%s_%s" % (calat,alat)
 
     # Write the actual input file for PWSCF.
-    with open("%s.pw.in" % jobname, "w") as f:
-        f.write(s)
+        with open("%s.pw.in" % jobname, "w") as f:
+            f.write(s)
 
     #Print some status messages.
-    print("Running with alat = %s, k = %s..." % (alat, k1))
+        print("Running with alat = %s, k = %s..." % (alat, k1))
     # Run PWSCF. Modify the pw.x command accordingly if needed.
-    os.system("pw.x -inp {jobname}.pw.in > {jobname}.out".format(jobname=jobname))
+        os.system("pw.x -inp {jobname}.pw.in > {jobname}.out".format(jobname=jobname))
 
-    print("Done. Output file is %s.out." % jobname)
+        print("Done. Output file is %s.out." % jobname)
 
 # This just does cleanup. For this lab, we don't need the files that are
 # dumped into the tmp directory.
