@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+__author__ = 'Zhi Deng'
+__version__ = '0.1'
+__date__ = 'May 14, 2015'
+
+import os
+import subprocess
+import argparse
+
+def proc_dir(d):
+    CWD = os.getcwd()
+    os.chdir(d)
+    subprocess.call(['qsub','tscc_script'])
+    os.chdir(CWD)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="""
+        qsend_qe is a convenient script for submitting PWSCF jobs
+        using templates on TSCC.""",
+        epilog="""
+    Author: Zhi Deng
+    Version: {}
+    Last updated: {}""".format(__version__, __date__))
+
+    parser.add_argument("directories", metavar="dir",
+                        type=str, nargs='+',
+                        help='directories to process')
+
+    args = parser.parse_args()
+
+    for d in args.directories:
+        proc_dir(d)
