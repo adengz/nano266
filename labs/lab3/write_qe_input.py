@@ -31,6 +31,7 @@ CURR_DIR=`pwd`
 SCRATCH=/oasis/tscc/scratch/z4deng/{name}
 mkdir $SCRATCH
 cp * $SCRATCH
+ln -s $SCRATCH scratch
 cd $SCRATCH
 mkdir tmp
 
@@ -38,6 +39,8 @@ mpirun -machinefile $PBS_NODEFILE -np 4 pw.x -inp {name}.pw.in > {name}.out
 
 rm -r tmp
 mv * $CURR_DIR
+cd $CURR_DIR
+rm scratch
 rm -r $SCRATCH
 '''
     with open('tscc_script','w') as f:

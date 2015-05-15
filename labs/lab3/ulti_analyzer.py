@@ -4,9 +4,9 @@ import pandas as pd
 import numpy as np
 from pymatgen.util.plotting_utils import get_publication_quality_plot
 
-class UltiAnalyzer(object):
+class BasicAnalyzer(object):
 
-    def __init__(self, csv_file, e_scale):
+    def __init__(self, csv_file, e_scale=1):
         df = pd.read_csv(csv_file)
         d = {}
         for col_value in df.columns.values:
@@ -16,6 +16,11 @@ class UltiAnalyzer(object):
                   'total_force':13.6057/0.5292}
         for k,v in factor.items():
             d[k] *= v
+        nkpts = d['nkpts']
+        #Detect k-point convergence or not
+        if nkpts.max() != nkpts.min():
+            k = [int(f.split('.')[0].split('_')[2]) for f in d['filename']]
+        d['kgrid'] = np.array(k)
         self._d = d
         self._df = df
 
@@ -25,35 +30,6 @@ class UltiAnalyzer(object):
     @property
     def dataframe(self):
         return self._df
-
-    def get_converged_kgrid(self, tol=1):
-        nkpts = self['nkpts']
-        assert nkpts.max() != nkpts.min()
-        e = self['energy']
-        filename = self['filename']
-        k = [int(f.split('.')[0].split('_')[2]) for f in filename]
-        self._d['kgrid'] = np.array(k)
-        ed = np.absolute(e[1:]-e[:-1])
-        if ed[-1] > tol:
-            raise ValueError('Not converged yet. Try larger k-point grid.')
-        else:
-            i = np.where(ed < tol)[0][0] + 1
-            return k[i]
-
-    def get_kgrid_plot(self, tol=1):
-        ck = self.get_converged_kgrid(tol)
-        print 'Convergence reached at %d' % ck
-        plt = get_publication_quality_plot(8,6)
-        k = self['kgrid']
-        e = self['energy']
-        plt.plot(k,e,'bo-',fillstyle='none')
-        ax = plt.gca()
-        xmin,xmax = ax.get_xlim()
-        for b in [e[-1]-tol,e[-1]+tol]:
-            plt.plot([xmin,xmax],[b,b],'k--',linewidth=2)
-        plt.ylabel('Energy (meV/atom)')
-        plt.xticks(k[::2])
-        return plt
 
     def _get_best_alat_ind(self):
         e = self['energy']
@@ -68,5 +44,17 @@ class UltiAnalyzer(object):
         return self['alat'][i], self['calat'][i]
 
 
+def get_converged_kgrid(kgrid,energy,tol=1):
+    ed = np.absolute(energy[1:]-energy[:-1])
+    if ed[-1] > tol:
+        raise ValueError('Not converged yet. Try larger k-point grid.')
+    else:
+        i = np.where(ed < tol)[0][0] + 1
+        return kgrid[i]
 
+def get_kgrid_plot(kgrid,energy,tol=1):
+    plt = get_publication_quality_plot(8,6)
+    plt.plot(kgrid,energy,'bo-',fillstyle='none')
+    plt.ylabel('Energy (meV/atom)')
+    return plt
 
