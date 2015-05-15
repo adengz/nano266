@@ -28,7 +28,7 @@ def write_tscc_script(jobname):
 
 CURR_DIR=`pwd`
 
-SCRATCH=/oasis/tscc/scratch/z4deng/test
+SCRATCH=/oasis/tscc/scratch/z4deng/{name}
 mkdir $SCRATCH
 cp * $SCRATCH
 cd $SCRATCH
