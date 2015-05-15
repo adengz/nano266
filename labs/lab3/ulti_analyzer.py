@@ -52,7 +52,7 @@ class UltiAnalyzer(object):
         for b in [e[-1]-tol,e[-1]+tol]:
             plt.plot([xmin,xmax],[b,b],'k--',linewidth=2)
         plt.ylabel('Energy (meV/atom)')
-        plt.xticks(k)
+        plt.xticks(k[::2])
         return plt
 
     def _get_best_alat_ind(self):
