@@ -52,7 +52,7 @@ def write_input(template,params,xkey):
     jobname = "%s_%s_%s" % (comp,latt,params[xkey])
     os.makedirs(jobname)
     with cd(jobname):
-        with open("%s/%s.pw.in" % (jobname,jobname), "w") as f:
+        with open("%s.pw.in" % jobname, "w") as f:
             f.write(t.format(**params))
         for e in elements:
             shutil.copyfile('../../%s' % PSP[e],
