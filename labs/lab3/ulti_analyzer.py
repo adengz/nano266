@@ -23,12 +23,24 @@ class BasicAnalyzer(object):
     def dataframe(self):
         return self._df
 
-def get_converged_kgrid(kgrid,energy,tol=1):
+def analyze_kgrid(analyzer):
+    a = analyzer
+    df = a.dataframe
+    nkpts = a['nkpts']
+    assert nkpts.max() != nkpts.min()
+    k = [int(f.split('.')[0].split('_')[2]) for f in a['filename']]
+    df['kgrid'] = k
+    return df
+
+def get_converged_kgrid(df,tol=1):
+    energy = df['energy'].values
     ed = np.absolute(energy[1:]-energy[:-1])
     if ed[-1] > tol:
         raise ValueError('Not converged yet. Try larger k-point grid.')
     else:
         i = np.where(ed < tol)[0][0] + 1
-        return kgrid[i]
+        return df['kgrid'].values[i]
+
+
 
 
