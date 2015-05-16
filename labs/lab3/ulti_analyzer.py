@@ -6,13 +6,14 @@ from pymatgen.util.plotting_utils import get_publication_quality_plot
 
 class BasicAnalyzer(object):
 
-    def __init__(self, csv_file, e_scale=1):
+    def __init__(self, csv_file, sorted_column, n_atoms=1):
         df = pd.read_csv(csv_file)
+        ndf = df.sort(columns=sorted_column)
         d = {}
-        for col_value in df.columns.values:
-            d[col_value] = df[col_value].values
+        for col_value in ndf.columns.values:
+            d[col_value] = ndf[col_value].values
         factor = {'ecut':13.6057, 'alat':0.5292,
-                  'energy':13605.7*e_scale,
+                  'energy':13605.7*n_atoms,
                   'total_force':13.6057/0.5292}
         for k,v in factor.items():
             d[k] *= v
@@ -22,7 +23,7 @@ class BasicAnalyzer(object):
             k = [int(f.split('.')[0].split('_')[2]) for f in d['filename']]
         d['kgrid'] = np.array(k)
         self._d = d
-        self._df = df
+        self._df = ndf
 
     def __getitem__(self, key):
         return self._d[key]
@@ -52,9 +53,4 @@ def get_converged_kgrid(kgrid,energy,tol=1):
         i = np.where(ed < tol)[0][0] + 1
         return kgrid[i]
 
-def get_kgrid_plot(kgrid,energy,tol=1):
-    plt = get_publication_quality_plot(8,6)
-    plt.plot(kgrid,energy,'bo-',fillstyle='none')
-    plt.ylabel('Energy (meV/atom)')
-    return plt
 
