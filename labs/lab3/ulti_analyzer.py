@@ -6,7 +6,7 @@ from pymatgen.util.plotting_utils import get_publication_quality_plot
 
 class BasicAnalyzer(object):
 
-    def __init__(self, csv_file, sorted_column, e_scale=1):
+    def __init__(self, csv_file, sorted_column=None, e_scale=1):
         df = pd.read_csv(csv_file)
         ndf = df.sort(columns=sorted_column)
         factor = {'ecut':13.6057, 'alat':0.5292,
