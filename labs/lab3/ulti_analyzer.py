@@ -2,7 +2,6 @@ __author__ = 'zhideng'
 
 import pandas as pd
 import numpy as np
-from pymatgen.util.plotting_utils import get_publication_quality_plot
 
 class BasicAnalyzer(object):
 
@@ -41,6 +40,9 @@ def get_converged_kgrid(df,tol=1):
         i = np.where(ed < tol)[0][0] + 1
         return df['kgrid'].values[i]
 
-
-
+def get_eq_latt(analyzer):
+    df = analyzer.df
+    assert df['alat'].max() != df['alat'].min()
+    i = df['energy'].idxmin()
+    return df['alat'][i]
 
