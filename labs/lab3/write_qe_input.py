@@ -46,13 +46,16 @@ rm -r $SCRATCH
     with open('tscc_script','w') as f:
         f.write(t.format(name=jobname))
 
-def write_input(template,params,xkey):
+def write_input(template,params,xkeys):
     comp,latt = template.split('.')
     c = Composition(comp)
     elements = [e.symbol for e in c.elements]
     with open('../%s.pw.in.template' % template) as f:
         t = f.read()
-    jobname = "%s_%s_%s" % (comp,latt,params[xkey])
+    jobinfo = [comp,latt]
+    for k in xkeys:
+        jobinfo.append(str(params[k]))
+    jobname = "_".join(jobinfo)
     os.makedirs(jobname)
     with cd(jobname):
         with open("%s.pw.in" % jobname, "w") as f:
