@@ -5,7 +5,7 @@ import shutil
 from monty.os import cd
 from pymatgen.core.composition import Composition
 
-PSP = {'Fe':'Fe.pbe-spn-kjpaw_psl.0.2.1.UPF',
+PSP = {'Fe':'Fe.pbe-nd-rrkjus.UPF',
        'Pb':'Pb.pbe-dn-rrkjus_psl.0.2.2.UPF',
        'Ti':'Ti.pbe-sp-van_ak.UPF',
        'O':'O.pbe-n-rrkjus_psl.0.1.UPF',
