@@ -33,14 +33,14 @@ def analyze_kgrid(analyzer):
 
 def get_converged_kgrid(df,tol=1):
     energy = df['energy'].values
-    #relative convergence
-    end = abs(energy[-2] - energy[-1])
-    if end > tol:
+    #absolute and relative convergence
+    abse = np.absolute(energy[:-1]-energy[-1])
+    rele = np.absolute(energy[1:]-energy[:-1])
+    if abse[-1] > tol:
         raise ValueError('Not converged yet. Try larger k-point grid.')
     else:
-        #absolute convergence
-        ed = np.absolute(energy[:-1]-energy[-1])
-        i = np.where(ed < tol)[0][0] + 1
+        i = np.intersect1d(np.where(abse < tol)[0],
+                           np.where(rele < tol)[0])[0] + 1
         return df['kgrid'].values[i]
 
 def get_eq_latt(analyzer):
