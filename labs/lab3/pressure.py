@@ -9,6 +9,7 @@ from ulti_analyzer import BasicAnalyzer
 
 def get_dfs():
     #make sure you have all the data needed in results.csv
+    #also celldm(3) is parsed as calat when analyzing the output
     b = BasicAnalyzer('results.csv')
     df = b.df
     #filter bcc and hcp structures, calculate the energy and volume
