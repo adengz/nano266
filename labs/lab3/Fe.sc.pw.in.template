@@ -26,10 +26,10 @@
   mixing_beta = 0.7,
  /
 ATOMIC_SPECIES
+   Fe   55.85  Fe.pbe-nd-rrkjus.UPF
    Fe1   55.85  Fe.pbe-nd-rrkjus.UPF
-   Fe2   55.85  Fe.pbe-nd-rrkjus.UPF
 ATOMIC_POSITIONS crystal 
-   Fe1      0.0    0.0    0.0
+   Fe      0.0    0.0    0.0
    Fe1      0.5    0.5    0.5    
 K_POINTS automatic 
   {k} {k} {k}   0 0 0 
