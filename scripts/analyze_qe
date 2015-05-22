@@ -41,7 +41,7 @@ def analyze(input_fs, output_f):
         writer.writeheader()
         for f in input_fs:
             r = get_results(f)
-            r["filename"] = os.split(f)[1]
+            r["filename"] = os.path.split(f)[1]
             writer.writerow(r)
     print("Results written to %s.csv!" % output_f)
 
@@ -54,6 +54,9 @@ if __name__ == "__main__":
         help='Files to process. You may use wildcards, e.g., "python analyze.py *.out".')
 
     parser.add_argument("-o", "--output", dest='output', type=str,
-                        nargs=1, help='Output file name.')
+                        nargs=1, default='results', help='Output file name.')
     args = parser.parse_args()
-    analyze(args.filenames, args.output)
+    output = args.output
+    if output == None:
+        output = 'results'
+    analyze(args.filenames, output)
