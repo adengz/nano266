@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+__author__ = 'Zhi Deng'
+__version__ = 0.1
+__date__ = 'May 21, 2015'
+
+import os
+import glob
+import subprocess
+import argparse
+
+def write_tscc_script(walltime):
+    jobname = glob.glob('*.pw.in')[0][:-6]
+    pwd = os.getcwd()
+    t = '''#!/bin/bash
+#PBS -q glean
+#PBS -N {name}
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime={h}:00:00
+#PBS -o job.out
+#PBS -e job.err
+#PBS -V
+#PBS -M z4deng@ucsd.edu
+#PBS -m abe
+#PBS -A ong-group
+#PBS -d {dir}
+
+CURR_DIR=`pwd`
+
+SCRATCH=/oasis/tscc/scratch/z4deng/{name}
+mkdir $SCRATCH
+cp * $SCRATCH
+ln -s $SCRATCH scratch
+cd $SCRATCH
+mkdir tmp
+
+mpirun -machinefile $PBS_NODEFILE -np 4 pw.x -inp {name}.pw.in > {name}.out
+
+rm -r tmp
+mv * $CURR_DIR
+cd $CURR_DIR
+rm scratch
+rm -r $SCRATCH
+'''
+    with open('tscc_script','w') as f:
+        f.write(t.format(name=jobname, dir=pwd, h=walltime))
+
+def proc_dir(d,walltime):
+    CWD = os.getcwd()
+    os.chdir(d)
+    write_tscc_script(walltime)
+    subprocess.call(['qsub','tscc_script'])
+    os.chdir(CWD)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="""
+        qsend_qe is a convenient script for submitting PWSCF jobs
+        using templates on TSCC.""",
+        epilog="""
+    Author: {}
+    Version: {}
+    Last updated: {}""".format(__author__, __version__, __date__))
+
+    parser.add_argument("directories", metavar="dir",
+                        type=str, nargs='+',
+                        help='directories to process')
+
+    parser.add_argument("-w", "--walltime", dest="walltime", type=int,
+                        nargs="?", default=None,
+                        help="Provide a walltime for the job in hours. "
+                        "Defaults are specified for each queue.")
+
+    args = parser.parse_args()
+    walltime = args.walltime
+    if walltime == None:
+        walltime = 1
+
+    for d in args.directories:
+        proc_dir(d, walltime)
