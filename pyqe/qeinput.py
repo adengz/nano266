@@ -14,6 +14,11 @@ def _write_input_from_temp(template, jobname, params):
         f.write(template.format(**params))
 
 def get_template(template):
+    '''
+    Method to initialize the template from file. 
+    :param template (str): Template name (e.g., 'Cu.fcc')
+    :return: template (str), structural info (list)
+    '''
     with open('%s.pw.in.template' % template) as f:
         t = f.read()
     struc_info = template.split('.')
