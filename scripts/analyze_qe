@@ -34,15 +34,14 @@ def get_results(filename):
 
 
 def analyze(input_fs, output_f):
-    filenames = [os.path.split(f)[1] for f in input_fs]
     fieldnames = ['filename', 'ecut', 'nkpts', 'alat','calat',
                   'energy','total_force', 'time']
     with open('%s.csv' % output_f, 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for f in filenames:
+        for f in input_fs:
             r = get_results(f)
-            r["filename"] = f
+            r["filename"] = os.split(f)[1]
             writer.writerow(r)
     print("Results written to %s.csv!" % output_f)
 
