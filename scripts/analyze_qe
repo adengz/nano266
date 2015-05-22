@@ -33,17 +33,17 @@ def get_results(filename):
     return data
 
 
-def analyze(input_fs, output_f):
+def analyze(filenames):
     fieldnames = ['filename', 'ecut', 'nkpts', 'alat','calat',
                   'energy','total_force', 'time']
-    with open('%s.csv' % output_f, 'w') as csvfile:
+    with open('results.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for f in input_fs:
+        for f in filenames:
             r = get_results(f)
             r["filename"] = os.path.split(f)[1]
             writer.writerow(r)
-    print("Results written to %s.csv!" % output_f)
+    print("Results written to results.csv!")
 
 
 if __name__ == "__main__":
@@ -52,11 +52,5 @@ if __name__ == "__main__":
     parser.add_argument(
         'filenames', metavar='filenames', type=str, nargs="+",
         help='Files to process. You may use wildcards, e.g., "python analyze.py *.out".')
-
-    parser.add_argument("-o", "--output", dest='output', type=str,
-                        nargs=1, default='results', help='Output file name.')
     args = parser.parse_args()
-    output = args.output
-    if output == None:
-        output = 'results'
-    analyze(args.filenames, output)
+    analyze(args.filenames)
