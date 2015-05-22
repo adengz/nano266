@@ -41,7 +41,7 @@ def analyze(filenames):
         writer.writeheader()
         for f in filenames:
             r = get_results(f)
-            r["filename"] = os.path.split(f)[1]
+            r["filename"] = os.path.split(f)[1][:-4]
             writer.writerow(r)
     print("Results written to results.csv!")
 

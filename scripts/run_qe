@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+__author__ = 'Zhi Deng'
+__version__ = 0.1
+__date__ = 'May 22, 2015'
+
+import os
+import shutil
+import argparse
+
+def run_qe(filenames):
+    if not os.path.exists('tmp'):
+        os.makedirs('tmp')
+    for f in filenames:
+        jobname = f[:-6]
+        print 'Running %s...' % jobname
+        os.system("pw.x < {j}.pw.in > {j}.out".format(j=jobname))
+    print 'Done.'
+    shutil.rmtree('tmp')
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='''Tool for running of PWSCF calculations in serial mode.''')
+    parser.add_argument(
+        'filenames', metavar='filenames', type=str, nargs="+",
+        help='Files to run. You may use wildcards, e.g., "run_qe *.pw.in".')
+    args = parser.parse_args()
+    run_qe(args.filenames)

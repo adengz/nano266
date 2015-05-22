@@ -24,7 +24,7 @@ def get_template(template):
     struc_info = template.split('.')
     return t, struc_info
 
-def write_input(temp, params, xkeys, func='pbe', parr=True):
+def write_input(temp, params, xkeys, parr=True, func='pbe',):
     '''
     Method to write QE input file in scratch dir from template.
     :param temp (list): Returned from get_template() method.
