@@ -1,6 +1,6 @@
-__author__ = 'Zhi Deng'
-
 #!/usr/bin/env python
+
+__author__ = 'Zhi Deng'
 
 import re
 import os
