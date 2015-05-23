@@ -13,7 +13,7 @@ class BasicAnalyzer(object):
 
     def __init__(self, csv_file, sorted_column=None, e_scale=1):
         '''
-        Initializing the analyzer.
+        Initialize the analyzer.
         :param csv_file (str): CSV file name.
         :param sorted_column (str): Ascending ort by this column name.
         :param e_scale (float): The factor of total energy in case
@@ -31,7 +31,7 @@ class BasicAnalyzer(object):
 
     def __getitem__(self, key):
         '''
-        Returns a numpy array of certain column.
+        Return a numpy array of certain column.
         :param key (str): Column name.
         :return: np.array
         '''
@@ -52,7 +52,7 @@ class BasicAnalyzer(object):
         :return:pd.df
         '''
         i = self.df['energy'].idxmin()
-        return self.df[i]
+        return self.df.loc[i]
 
 
 def analyze_kgrid(analyzer):
@@ -68,7 +68,7 @@ def analyze_kgrid(analyzer):
     df['kgrid'] = k
     return df
 
-def get_converged_param(df, x, y, tol=1):
+def get_converged_param(df, x, y, tol):
     '''
     Method to perform the convergence test.
     :param df (pd.df): Pandas dataframe. For energy cutoff, use the df from
@@ -83,8 +83,8 @@ def get_converged_param(df, x, y, tol=1):
     assert df[x].max() != df[x].min()
     y = df[y].values
     #absolute and relative convergence
-    abse = np.absolute(y[:-1]-y[-1])
-    rele = np.absolute(y[1:]-y[:-1])
+    abse = np.absolute(y[:-1] - y[-1])
+    rele = np.absolute(y[1:] - y[:-1])
     if abse[-1] > tol:
         raise ValueError('Not converged yet. Try larger input parameter.')
     else:
@@ -92,17 +92,27 @@ def get_converged_param(df, x, y, tol=1):
                            np.where(rele < tol)[0])[0] + 1
         return df[x].values[i]
 
-def get_convergence_plot(df, x, y, tol=1):
+def get_convergence_plot(df, x, y, tol):
     i = get_converged_param(df, x, y, tol)
     print i
-    plt = get_publication_quality_plot(8,6)
+    plt = get_publication_quality_plot(8, 6)
     x = df[x].values
     y = df[y].values
     plt.plot(x, y, 'bo-', fillstyle='none')
     ax = plt.gca()
     xmin, xmax = ax.get_xlim()
-    for e in [y[-1]-tol, y[-1]+tol]:
-        plt.plot([xmin,xmax],[e,e],'k--',lw=2)
-    plt.axvline(x=i,color='k',linestyle='dashed',lw=2)
+    for e in [y[-1] - tol, y[-1] + tol]:
+        plt.plot([xmin,xmax], [e,e], 'k--', lw=2)
+    plt.axvline(x=i, color='k', linestyle='dashed', lw=2)
     return plt
 
+def get_ea_plot(csv_file, e_scale=1):
+    b = BasicAnalyzer(csv_file, 'alat', e_scale)
+    assert b['alat'].max() != b['alat'].min()
+    a0 = b.emin_config.alat
+    print a0
+    plt = get_publication_quality_plot(8, 6)
+    plt.plot(b['alat'], b['energy'], 'bo--', fillstyle='none')
+    plt.axvline(x=a0, color='k', linestyle='dashed', lw=2)
+    plt.xlabel('Lattice constant $a$ ($\AA$)')
+    return plt
