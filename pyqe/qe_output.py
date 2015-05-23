@@ -60,11 +60,10 @@ def analyze_kgrid(analyzer):
     :param analyzer: BasicAnalyzer obj.
     :return:pd.df with new 'kgrid' column
     '''
-    a = analyzer
-    df = a.df
-    nkpts = a['nkpts']
+    df = analyzer.df
+    nkpts = df['nkpts']
     assert nkpts.max() != nkpts.min()
-    k = [int(f.split('.')[0].split('_')[2]) for f in a['filename']]
+    k = [int(f.split('_')[-1]) for f in df['filename']]
     df['kgrid'] = k
     return df
 
