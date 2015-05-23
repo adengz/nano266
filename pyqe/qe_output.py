@@ -24,7 +24,7 @@ class BasicAnalyzer(object):
         ndf = df.sort(columns=sorted_column)
         factor = {'alat':0.5292,
                   'energy':13605.7*e_scale,
-                  'total_force':13.6057/0.5292}
+                  'total_force':13605.7/0.5292}
         for k,v in factor.items():
             ndf[k] *= v
         self._df = ndf
