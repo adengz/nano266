@@ -2,6 +2,7 @@ __author__ = 'Zhi Deng'
 
 import pandas as pd
 import numpy as np
+from pymatgen.util.plotting_utils import get_publication_quality_plot
 
 class BasicAnalyzer(object):
     '''
@@ -67,7 +68,7 @@ def analyze_kgrid(analyzer):
     df['kgrid'] = k
     return df
 
-def get_converged_param(df, x, e='energy', tol=1):
+def get_converged_param(df, x, y, tol=1):
     '''
     Method to perform the convergence test.
     :param df (pd.df): Pandas dataframe. For energy cutoff, use the df from
@@ -80,10 +81,10 @@ def get_converged_param(df, x, e='energy', tol=1):
     :return:he input parameter at convergence
     '''
     assert df[x].max() != df[x].min()
-    energy = df[e].values
+    y = df[y].values
     #absolute and relative convergence
-    abse = np.absolute(energy[:-1]-energy[-1])
-    rele = np.absolute(energy[1:]-energy[:-1])
+    abse = np.absolute(y[:-1]-y[-1])
+    rele = np.absolute(y[1:]-y[:-1])
     if abse[-1] > tol:
         raise ValueError('Not converged yet. Try larger input parameter.')
     else:
@@ -91,5 +92,15 @@ def get_converged_param(df, x, e='energy', tol=1):
                            np.where(rele < tol)[0])[0] + 1
         return df[x].values[i]
 
-
+def get_convergence_plot(df, x, y, tol=1):
+    i = get_converged_param(df, x, y, tol)
+    print i
+    plt = get_publication_quality_plot(8,6)
+    x = df[x].values
+    y = df[y].values
+    plt.plot(x, y, 'bo-', fillstyle='none')
+    for e in [y[-1]-tol, y[-1]+tol]:
+        plt.plot([x[0],x[-1]],[e,e],'k--',lw=2)
+    plt.axvline(x=i,color='k',linestyle='dashed',lw=2)
+    return plt
 
