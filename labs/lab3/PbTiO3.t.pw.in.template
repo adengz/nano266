@@ -8,7 +8,7 @@
  /
  &SYSTEM
   ibrav = 1,
-  celldm(1) = 7.49,
+  celldm(1) = {alat},
   nat = 5,
   ntyp = 3,
   ecutwfc = 80,
