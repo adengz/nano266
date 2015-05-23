@@ -99,8 +99,10 @@ def get_convergence_plot(df, x, y, tol=1):
     x = df[x].values
     y = df[y].values
     plt.plot(x, y, 'bo-', fillstyle='none')
+    ax = plt.gca()
+    xmin, xmax = ax.get_xlim()
     for e in [y[-1]-tol, y[-1]+tol]:
-        plt.plot([x[0],x[-1]],[e,e],'k--',lw=2)
+        plt.plot([xmin,xmax],[e,e],'k--',lw=2)
     plt.axvline(x=i,color='k',linestyle='dashed',lw=2)
     return plt
 
