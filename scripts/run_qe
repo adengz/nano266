@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __author__ = 'Zhi Deng'
-__version__ = 0.1
+__version__ = 1.0
 __date__ = 'May 22, 2015'
 
 import os
@@ -21,9 +21,15 @@ def run_qe(filenames):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='''Tool for running of PWSCF calculations in serial mode.''')
+        description='''Tool for running PWSCF calculations in serial mode.''',
+        epilog="""
+    Author: {}
+    Version: {}
+    Last updated: {}""".format(__author__, __version__, __date__))
+
     parser.add_argument(
         'filenames', metavar='filenames', type=str, nargs="+",
         help='Files to run. You may use wildcards, e.g., "run_qe *.pw.in".')
+
     args = parser.parse_args()
     run_qe(args.filenames)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 __author__ = 'Zhi Deng'
+__version__ = 1.0
+__date__ = 'May 23, 2015'
 
 import re
 import os
@@ -48,9 +50,15 @@ def analyze(filenames):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='''Tool for analysis of PWSCF calculations.''')
+        description='''Tool for analysis of PWSCF calculations.''',
+        epilog="""
+    Author: {}
+    Version: {}
+    Last updated: {}""".format(__author__, __version__, __date__))
+
     parser.add_argument(
         'filenames', metavar='filenames', type=str, nargs="+",
         help='Files to process. You may use wildcards, e.g., "python analyze.py *.out".')
+
     args = parser.parse_args()
     analyze(args.filenames)

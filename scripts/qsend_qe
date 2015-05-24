@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 __author__ = 'Zhi Deng'
-__version__ = 0.1
-__date__ = 'May 21, 2015'
+__version__ = 1.0
+__date__ = 'May 23, 2015'
 
 import os
 import glob
@@ -12,6 +12,7 @@ import argparse
 def write_tscc_script(walltime):
     jobname = glob.glob('*.pw.in')[0][:-6]
     pwd = os.getcwd()
+    user = os.environ['USER']
     t = '''#!/bin/bash
 #PBS -q glean
 #PBS -N {name}
@@ -20,14 +21,14 @@ def write_tscc_script(walltime):
 #PBS -o job.out
 #PBS -e job.err
 #PBS -V
-#PBS -M z4deng@ucsd.edu
-#PBS -m abe
+#PBS -M {user}@ucsd.edu
+#PBS -m b
 #PBS -A ong-group
 #PBS -d {dir}
 
 CURR_DIR=`pwd`
 
-SCRATCH=/oasis/tscc/scratch/z4deng/{name}
+SCRATCH=/oasis/tscc/scratch/{user}/{name}
 mkdir $SCRATCH
 cp * $SCRATCH
 ln -s $SCRATCH scratch
@@ -43,7 +44,7 @@ rm scratch
 rm -r $SCRATCH
 '''
     with open('tscc_script','w') as f:
-        f.write(t.format(name=jobname, dir=pwd, h=walltime))
+        f.write(t.format(name=jobname, dir=pwd, h=walltime, user=user))
 
 def proc_dir(d,walltime):
     CWD = os.getcwd()
@@ -55,8 +56,8 @@ def proc_dir(d,walltime):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="""
-        qsend_qe is a convenient script for submitting PWSCF jobs
-        using templates on TSCC.""",
+        Tool for submitting PWSCF jobs using templates on TSCC.
+        Usage is similar to qsend. Prerogative for MAVRLers.""",
         epilog="""
     Author: {}
     Version: {}
@@ -69,7 +70,7 @@ if __name__ == "__main__":
     parser.add_argument("-w", "--walltime", dest="walltime", type=int,
                         nargs="?", default=None,
                         help="Provide a walltime for the job in hours. "
-                        "Defaults are specified for each queue.")
+                        "Defaults to 1 hour.")
 
     args = parser.parse_args()
     walltime = args.walltime
