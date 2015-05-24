@@ -40,8 +40,8 @@ class BasicAnalyzer(object):
     @property
     def df(self):
         '''
-        Return the processed pandas dataframe.
-        :return:pd.df
+        Return the processed pd.DataFrame.
+        :return: pd.df
         '''
         return self._df
 
@@ -49,7 +49,7 @@ class BasicAnalyzer(object):
     def emin_config(self):
         '''
         Show the minimum energy configuration.
-        :return:pd.df
+        :return: pd.df
         '''
         i = self.df['energy'].idxmin()
         return self.df.loc[i]
@@ -57,9 +57,9 @@ class BasicAnalyzer(object):
 
 def analyze_kgrid(analyzer):
     '''
-    Update the k-mesh to the padans dataframe.
-    :param analyzer: BasicAnalyzer obj.
-    :return:pd.df with new 'kgrid' column
+    Update the k-mesh to the pd.DataFrame.
+    :param analyzer: BasicAnalyzer object.
+    :return: pd.df with new 'kgrid' column
     '''
     df = analyzer.df
     nkpts = df['nkpts']
@@ -71,14 +71,15 @@ def analyze_kgrid(analyzer):
 def get_converged_param(df, x, y, tol):
     '''
     Method to perform the convergence test.
-    :param df (pd.df): Pandas dataframe. For energy cutoff, use the df from
+    :param df (pd.df): Pandas DataFrame. For energy cutoff, use the df from
         analyzer. For others, you need to update the input parameter using
         appropriate analyze_*() method.
     :param x (str): Tested input parameter. Choose among ['nkpts','ecut',
         'nvac','nslab'].
-    :param e (str): Energy option. Default to total energy.
+    :param y (str): Tested output. Choose among ['energy','total_force',
+        'surf_energy'].
     :param tol (float): Convergence criteria.
-    :return:he input parameter at convergence
+    :return: The input parameter at convergence
     '''
     assert df[x].max() != df[x].min()
     y = df[y].values
@@ -93,6 +94,18 @@ def get_converged_param(df, x, y, tol):
         return df[x].values[i]
 
 def get_convergence_plot(df, x, y, tol):
+    '''
+    Convenient method to directly draw the convergence test plot.
+    :param df (pd.df): Pandas DataFrame. For energy cutoff, use the df from
+        analyzer. For others, you need to update the input parameter using
+        appropriate analyze_*() method.
+    :param x (str): Tested input parameter. Choose among ['nkpts','ecut',
+        'nvac','nslab'].
+    :param y (str): Tested output. Choose among ['energy','total_force',
+        'surf_energy'].
+    :param tol (float): Convergence criteria.
+    :return: Convergence test plot as a matplotlib.pyplot object.
+    '''
     i = get_converged_param(df, x, y, tol)
     print i
     plt = get_publication_quality_plot(8, 6)
@@ -107,6 +120,14 @@ def get_convergence_plot(df, x, y, tol):
     return plt
 
 def get_ea_plot(csv_file, e_scale=1):
+    '''
+    Convenient method to directly draw the energy as a function of lattice
+    constant plot from a csv file.
+    :param csv_file (str): CSV file name.
+    :param e_scale (float): The factor of total energy in case
+            various scales (meV/f.u. or meV/atom) are needed.
+    :return: E-a plot as a matplotlib.pyplot object.
+    '''
     b = BasicAnalyzer(csv_file, 'alat', e_scale)
     assert b['alat'].max() != b['alat'].min()
     a0 = b.emin_config.alat
