@@ -22,7 +22,7 @@ def write_tscc_script(walltime):
 #PBS -e job.err
 #PBS -V
 #PBS -M {user}@ucsd.edu
-#PBS -m b
+#PBS -m a
 #PBS -A ong-group
 #PBS -d {dir}
 
