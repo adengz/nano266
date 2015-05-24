@@ -61,7 +61,7 @@ $ qsend_qe *
 ```
 Each set of PWSCF input is sent to glean queue as one job. When all the jobs are done, in the scratch directory, do
 ```sh
-$ analyze */*_*.out
+$ analyze_qe */*_*.out
 ```
 A results.csv file will be written in the scratch directory. Note all the job.out are not parsed. 
 
