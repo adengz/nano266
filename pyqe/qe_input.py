@@ -31,13 +31,13 @@ def write_input(temp, params, xkeys, parr=True, func='pbe'):
     :param params (dict): Dict of parameters to pass into template. Keys
         are the strings within the placeholders in the template.
     :param xkeys ([str]): Parameters to distinguish between different
-        inpur files.temwr
-    :param func (str): Functional used. Default to GGA. Refer to the
-        format of filename of template files.
+        input files.
     :param parr (bool): Whether use parallel mode (send the calculation
         to computational nodes). Default to True. Note in non-parallel
         (serial, run the calculation on login nodes), you need to cp the
         psp files into scratch dir.
+    :param func (str): Functional used. Default to GGA. Refer to the
+        format of filename of template files.
     :return: None
     '''
     t, info = temp
