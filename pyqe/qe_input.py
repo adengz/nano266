@@ -68,14 +68,12 @@ def get_slab_params(a0, miller_indices, nslab, nvac):
                            [0.0, 0.5, 0.5]])
         alat = a0
         calat = nlayers
-        k = 8
     elif miller_indices == '111':
         coords = np.array([[0.0, 0.0, 0.0],
                            [0.666667, 0.333333, 0.333333],
                            [0.333333, 0.666667, 0.666667]])
         alat = a0 / sqrt(2)
         calat = nlayers * sqrt(6)
-        k = 16
     else:
         raise ValueError('Only 100 and 111 planes are supported.')
     coords[:, 2] = coords[:, 2] / nlayers
@@ -89,7 +87,7 @@ def get_slab_params(a0, miller_indices, nslab, nvac):
     atompos = "\n".join(atompos)
     conv_thr = 1e-6 * nat
     p = {'alat': alat, 'calat': calat, 'nslab': nslab, 'nvac': nvac,
-         'k': k, 'atompos': atompos, 'nat': nat, 'conv_thr': conv_thr}
+         'k': 16, 'atompos': atompos, 'nat': nat, 'conv_thr': conv_thr}
     return p
 
 if __name__ == '__main__':
