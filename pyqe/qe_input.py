@@ -60,6 +60,15 @@ def write_input(temp, params, xkeys, parr=True, func='pbe'):
         _write_input_from_temp(t, jobname, params)
 
 def get_slab_params(a0, miller_indices, nslab, nvac):
+    '''
+    Method to generate input parameters for Al slab calculations.
+    :param a0 (float): Lattice constant of fcc Al at equilibrium.
+    :param miller_indices (str): Miller indices. Only '100' and '111' are
+        supported.
+    :param nslab (int): Number of slab layers.
+    :param nvac (int): Number of vacuum layers.
+    :return: p (dict): Parameters dict to fill in the template. 
+    '''
     nlayers = float(nslab + nvac)
     if miller_indices == '100':
         coords = np.array([[0.0, 0.0, 0.0],
