@@ -43,30 +43,31 @@ energy cutoff of 30 Ry with a $k$-point grid of 16 $\times$ 16 $\times$ 1.
    i.e., by plotting the equation of state of energy versus the lattice
    parameter. Converge your lattice parameter to within 0.001 angstroms. For
    reference, the experimental lattice parameter is 4.05 angstroms. A template
-   file `Al.fcc.pw.in.template` has already been provided. Please use the
+   file `Al.100.bulk.pw.in.template` has already been provided. Please use the
    `scf.py` script to perform these calculations. As usual, please scan with
    a fairly coarse grid (e.g., 0.01 increments) before performing scans with a
    more dense grid near the minimum energy. Record down the lattice parameter
    in Bohr and energy in Ry.
 2. Using the lattice parameter you obtained in part 1, perform a calculation of
-   the Al (100) surface. A sample `Al100.pw.in.template` file has been
-   provided to you, as well as a `fcc_surf_gen.py`. Start by typing:
+   the Al (100) surface. A sample `Al.100.surf.pw.in.template` file has been
+   provided to you, as well as a `fcc_surf_gen.py` (type `fcc_surf_gen.py -h`
+   for help). Start by typing:
 
-     `python fcc_surf_gen.py --a 7.65 --nslab 3 --nvac 3`
+     `python fcc_surf_gen.py --a 7.65 --miller "100" --k 16 --nslab 3 --nvac 3`
 
    The output should be something like the following:
 
      &CONTROL
       calculation = 'relax' ,
       outdir = './tmp' ,
-      prefix = 'Al_100',
+      prefix = 'Al_100_3_3',
       pseudo_dir = './' ,
       tprnfor = .True.,
       tstress = .True.,
      /
      &SYSTEM
       ibrav = 6,
-      celldm(1) = 6.92,
+      celldm(1) = 7.65,
       celldm(3) = 6,
       nat = 12,
       ntyp = 1,
@@ -79,22 +80,23 @@ energy cutoff of 30 Ry with a $k$-point grid of 16 $\times$ 16 $\times$ 1.
      &ELECTRONS
       diagonalization = 'david',
       conv_thr = 1.D-6,
-      mixing_beta = 0.7,
+      mixing_beta = 0.3,
+      mixing_mode = 'local-TF'
      /
      &IONS
       ion_dynamics = 'bfgs',
      /
     ATOMIC_SPECIES
-      Al   26.98  Al.pbe-n-kjpaw_psl.0.1.UPF
+      Al   26.98  Al.pbe-n-van.UPF
     ATOMIC_POSITIONS crystal
       Al 0.0 0.0 0.0
       Al 0.5 0.5 0.0
       Al 0.5 0.0 0.0833333333333
       Al 0.0 0.5 0.0833333333333
-      Al 0.0 0.0 0.166666666667 0 0 0
-      Al 0.5 0.5 0.166666666667 0 0 0
-      Al 0.5 0.0 0.25 0 0 0
-      Al 0.0 0.5 0.25 0 0 0
+      Al 0.0 0.0 0.166666666667
+      Al 0.5 0.5 0.166666666667
+      Al 0.5 0.0 0.25
+      Al 0.0 0.5 0.25
       Al 0.0 0.0 0.333333333333
       Al 0.5 0.5 0.333333333333
       Al 0.5 0.0 0.416666666667
@@ -122,7 +124,7 @@ energy cutoff of 30 Ry with a $k$-point grid of 16 $\times$ 16 $\times$ 1.
 
    You can write the output to a file by giving it the `--outfile` option:
 
-     python fcc_surf_gen.py --a 7.65 --nslab 3 --nvac 3 --outfile Al100_3_3.pw.in
+     python fcc_surf_gen.py --a 7.65 --miller "100" --k 16 --nslab 3 --nvac 3 --outfile Al100_3_3.pw.in
 
    To do this question, vary nslab and nvac and look at how the energies
    change with nslab and nvac. Start by keeping nslab = 2 and vary nvac
@@ -146,7 +148,7 @@ energy cutoff of 30 Ry with a $k$-point grid of 16 $\times$ 16 $\times$ 1.
 
 We will now explore the (111) surface of Al. For this, we need to first get
 our slab structure. Unlike the (100) surface that is simply along the cubic
-crystallographic axes, getting the (100) surface involves some work.
+crystallographic axes, getting the (111) surface involves some work.
 
 The first thing to note is that the fcc structure is in fact a stacking of
 hexagonally close-packed atoms along the [111] direction.
@@ -173,7 +175,7 @@ platform. Here is the step by step guide to creating the Al (111) surface.
 * Step 4: The next step is to generate a larger unit cell as we are going to
   ``cut'' the crystal in a different orientation that goes beyond the limits
   of the unit cell. Go back to the `Unit Cell` tab. Click on `Options` and
-  then enter 2s for the diagonal elements of the rotation matrix. That
+  then enter 2 for all the diagonal elements of the rotation matrix. That
   generates a $$2 \times 2 \times 2$$ supercell of your crystal. Click `Ok`
   for all the warnings. Click `Ok` until you close all dialog boxes and see a
   larger version of the Al cell.
