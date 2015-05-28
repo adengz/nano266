@@ -11,7 +11,7 @@ SURF = {'100':{'coords':np.array([[0.0, 0.0, 0.0],
         '111':{'coords':np.array([[0.0, 0.0, 0.0],
                                   [0.666667, 0.333333, 0.333333],
                                   [0.333333, 0.666667, 0.666667]]),
-               'a':1/sqrt(2), 'c':sqrt(6)}, 'area':sqrt(3)/2}
+               'a':1/sqrt(2), 'c':sqrt(6), 'area':sqrt(3)/2}}
 
 
 def get_slab_params(a0, miller_indices, nslab, nvac):
