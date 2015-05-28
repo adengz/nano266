@@ -59,45 +59,6 @@ def write_input(temp, params, xkeys, parr=True, func='pbe'):
     else:
         _write_input_from_temp(t, jobname, params)
 
-def get_slab_params(a0, miller_indices, nslab, nvac):
-    '''
-    Method to generate input parameters for Al slab calculations.
-    :param a0 (float): Lattice constant of fcc Al at equilibrium.
-    :param miller_indices (str): Miller indices. Only '100' and '111' are
-        supported.
-    :param nslab (int): Number of slab layers.
-    :param nvac (int): Number of vacuum layers.
-    :return: p (dict): Parameters dict to fill in the template. 
-    '''
-    nlayers = float(nslab + nvac)
-    if miller_indices == '100':
-        coords = np.array([[0.0, 0.0, 0.0],
-                           [0.5, 0.5, 0.0],
-                           [0.5, 0.0, 0.5],
-                           [0.0, 0.5, 0.5]])
-        alat = a0
-        calat = nlayers
-    elif miller_indices == '111':
-        coords = np.array([[0.0, 0.0, 0.0],
-                           [0.666667, 0.333333, 0.333333],
-                           [0.333333, 0.666667, 0.666667]])
-        alat = a0 / sqrt(2)
-        calat = nlayers * sqrt(6)
-    else:
-        raise ValueError('Only 100 and 111 planes are supported.')
-    coords[:, 2] = coords[:, 2] / nlayers
-    ncoords = []
-    for i in range(nslab):
-        ncoords.extend(coords + [0, 0, i / nlayers])
-    nat = len(ncoords)
-    atompos = []
-    for i, c in enumerate(ncoords):
-        atompos.append("  Al %s %s %s" % tuple(c))
-    atompos = "\n".join(atompos)
-    conv_thr = 1e-6 * nat
-    p = {'alat': alat, 'calat': calat, 'nslab': nslab, 'nvac': nvac,
-         'k': 16, 'atompos': atompos, 'nat': nat, 'conv_thr': conv_thr}
-    return p
 
 if __name__ == '__main__':
     pass
