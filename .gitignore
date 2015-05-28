@@ -188,4 +188,6 @@ sympy-plots-for-*.tex/
 archive
 scratch
 *.csv
+*.json
 *.out
+.DS_Store
