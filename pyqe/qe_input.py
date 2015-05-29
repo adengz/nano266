@@ -3,8 +3,6 @@ __author__ = 'Zhi Deng'
 import os
 import glob
 import shutil
-import numpy as np
-from math import sqrt
 from monty.os import cd
 from pymatgen.core.composition import Composition
 
