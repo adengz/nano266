@@ -12,5 +12,5 @@ H_sites = {'top': (0, 0, 0.05),
 temp = get_template('AlH.111.adsor')
 with cd('scratch'):
     for k,v in H_sites.items():
-        p = {'site': k, 'h_coords': '%s %s' % tuple(v)}
+        p = {'site': k, 'h_coords': '%s %s %s' % tuple(v)}
         write_input(temp, p, ['site'])
