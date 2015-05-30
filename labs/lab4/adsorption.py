@@ -9,7 +9,7 @@ H_sites = {'top': (0, 0),
            'hollow1': (0.33333, 0.16667),
            'hollow2': (0.16667, 0.33333)}
 
-temp = get_template('Al.111.adsor')
+temp = get_template('AlH.111.adsor')
 with cd('scratch'):
     for k,v in H_sites.items():
         p = {'site': k, 'h_coords': '%s %s' % tuple(v)}
