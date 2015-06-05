@@ -157,14 +157,14 @@ We can construct two types of migration pathways connecting 2 hollow1 sites:
 \end{itemize}
 Apparently, the barrier of path1 is lower than that of path2, making path1 more likely to be the dominant migration path for H on Al $(111)$ surface. 
 
-Similar as interstitial diffusion but with negligible entropy contribution, the diffusion coefficient of H on Al $(111)$ can be roughly estimated using the following equation: 
+The diffusion coefficient of H on Al $(111)$ can be roughly estimated using the following equation: 
 \begin{flalign*}
-	D = D_0\exp\left(-\frac{\Delta E}{kT}\right)
+	D = \frac{\nu r^2}{z}
 \end{flalign*}
-where $D_0$ is the diffusion coefficient at infinite temperature, $\Delta E$ is the migration barrier (binding energy difference between hollow1 and top site), $k$ is the Boltzmann constant and $T$ is the temperature. $D_0$ can be calculated using the following equation: 
+where $\nu$ is the hopping frequency, $r$ is jumping distance between 2 neighbor hollow1 sites ($r = a_0/\sqrt{2}$) and $z$ is the number of nearest neighbors ($z = 6$ for hexagonal Al $(111)$). $\nu$ can be calculated using the following equation: 
 \begin{flalign*}
-	D_0 = \frac{z\nu r^2}{2d}
+	\nu = \nu_0\exp\left(-\frac{\Delta E}{kT}\right)
 \end{flalign*}
-where $z$ is the number of nearest hollow1 sites around a particular hollow1 site, $\nu$ is an ``attempt frequency'' for atom to jump ($\sim 10^{13}\unit{s^{-1}}$), $r$ is the distance between 2 hollow1 sites, $d$ is the diffusion dimensionality. In this case, $z = 6$, $r = a_0/\sqrt{2}$, $d = 2$. 
+where $\nu_0$ is the oscillation frequency of H atom ($\nu_0 \sim 10^{13}\unit{s^{-1}}$), $\Delta E$ is the migration barrier (binding energy difference between hollow1 and top site), $k$ is the Boltzmann constant and $T$ is the temperature. 
 
 \end{document}
